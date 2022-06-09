@@ -1,0 +1,28 @@
+{
+  "name": "touristicviews",
+  "version": "1.0.0",
+  "description": "api (server backend) for touristicviews mobile applications and reactJS control panel",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metaCodeDiv/TouristicViews.git"
+  },
+  "author": "MetaCodeDiv -- Mohammed Al-homaidi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/metaCodeDiv/TouristicViews/issues"
+  },
+  "homepage": "https://github.com/metaCodeDiv/TouristicViews#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parse": "^0.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^6.3.6"
+  }
+}

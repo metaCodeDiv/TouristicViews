@@ -51,7 +51,13 @@ app.use('/admin', adminRouter)
 
 app.get('/', (req, res) => {
 
-    res.json('welcome')
+    user.find({}, (error, data) => {
+        if (!error)
+            res.status(200).json({
+                data
+            })
+    })
+   
 })
 
 

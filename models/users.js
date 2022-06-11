@@ -13,11 +13,15 @@ const userSchema = mongoose.Schema({
     },
     image:{
         type:Buffer
+    },
+    createDate:{
+        type:Date,
+        default:Date.now,
+        required:true
     }
 })
 
 autoIncrement.initialize(mongoose.connection);
-userSchema.plugin(autoIncrement.plugin, 'Counter');
-const userModel = mongoose.model('user', userSchema);
+userSchema.plugin(autoIncrement.plugin, 'id');
 
 module.exports = mongoose.model('user',userSchema)

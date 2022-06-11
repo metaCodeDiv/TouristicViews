@@ -187,12 +187,9 @@ app.get('/getImage', (req, res) => {
 
 // start the server 
 const server = http.createServer(app)
-server.listen(process.env.PORT, (req, res) => {
+server.listen(process.env.PORT||3000, (req, res) => {
     
-    ngrok.connect(process.env.PORT, function (err, url) {
-        console.log(`Node.js local server is publicly-accessible at ${url}`);
-    });
-
+    
     console.log(`the server is running on ${process.env.PORT} ports`)
 
     

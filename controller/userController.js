@@ -43,7 +43,7 @@ exports.createAccount = (req, res) => {
 
 exports.login = (req, res) => {
     const { username, password } = req.body
-
+    console.log('there is some one is logined ')
 
     user.findOne({
         username,

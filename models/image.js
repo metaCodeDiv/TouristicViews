@@ -3,8 +3,7 @@ const autoIncrement = require('mongoose-auto-increment');
 
 const imageSchema = mongoose.Schema({
     image: {
-        data: Buffer,
-        contentType: String
+        type:String
     },
     categoryID: {
         type: Number,

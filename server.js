@@ -5,6 +5,9 @@ const app = express();
 require('dotenv').config()
 const multer = require('multer')
 
+const FormData = require('form-data');
+const form = new FormData();
+
 // to can get to our application public
 
 const ngrok = require('ngrok');
@@ -44,10 +47,23 @@ const userRouter = require('./router/userRouter')
 const adminRouter = require('./router/adminRouter')
 const userModel = require('./models/users');
 const { lookup } = require('dns');
+const users = require('./models/users');
+const e = require('express');
 
 
 app.use('/user', userRouter);
 app.use('/admin', adminRouter)
+
+app.get('/getFormData', (req, res) => {
+    const fs = require('fs')
+    fs.readFile('./cacheImage/image-1655046102944.png', (err, data) => {
+
+        res.json(({
+            data
+        }))
+    });
+
+})
 
 app.get('/', (req, res) => {
 
@@ -57,7 +73,7 @@ app.get('/', (req, res) => {
                 data
             })
     })
-   
+
 })
 
 
@@ -80,10 +96,7 @@ app.post('/upload', upload.single('image'), (req, res, next) => {
     var obj = {
         userID: req.body.userID,
         categoryID: req.body.categoryID,
-        image: {
-            data: fs.readFileSync(path.join(__dirname + '/cacheImage/' + req.file.filename)),
-            contentType: 'image/png'
-        }
+        image: '/cacheImage/' + req.file.filename
     }
 
     image.create(obj, (err, item) => {
@@ -99,6 +112,42 @@ app.post('/upload', upload.single('image'), (req, res, next) => {
         }
     });
 
+})
+
+
+app.get('/cursor', (req, res) => {
+
+    let data =[];
+    let myPromise = new Promise((correct, erro) => {
+        users.find({},(error,data)=>{
+            if(!error)
+               correct(data)
+            else
+                erro("error")
+        }).cursor().eachAsync((async (doc) => {
+            data.push(doc)
+        }))
+        
+    })
+
+    myPromise.then((correct)=>{
+        console.log(correct)
+    })
+
+
+    
+
+    
+    
+
+    // for  (const doc of image.find({}).cursor()) {
+    //     console.log({ doc })
+    // }
+    function a() {
+        res.json("hello")
+    }
+
+    a()
 })
 app.get('/imageByIdCategory', (req, res) => {
 
@@ -133,8 +182,14 @@ app.get('/imageByIdCategory', (req, res) => {
                 data
             })
         }
-    })
 
+        else {
+            res.json({
+                error: err
+            })
+        }
+    })
+    // qubt77100
 
     // {
     //     
@@ -187,11 +242,11 @@ app.get('/getImage', (req, res) => {
 
 // start the server 
 const server = http.createServer(app)
-server.listen(process.env.PORT||3000, (req, res) => {
-    
-    
+server.listen(process.env.PORT || 3000, (req, res) => {
+
+
     console.log(`the server is running on ${process.env.PORT} ports`)
 
-    
+
 
 })

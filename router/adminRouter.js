@@ -10,9 +10,9 @@ router.get('/fetchUsers',adminController.fetchUsers)
 router.get('/removeAllUser',adminController.removeAllUser)
 
 // category router 
-router.post('/addCategory',adminController.addCategory)
+// router.post('/addCategory',adminController.addCategory)
 router.get('/fetchAllCategorys',adminController.fetchAllCategorys)
 router.get('/removeAllCategorys',adminController.removeAllCategorys)
-
+router.get('/removeAllImages',adminController.removeAllImages)
 
 module.exports = router;

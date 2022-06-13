@@ -6,12 +6,10 @@ const imageSchema = mongoose.Schema({
         type:String
     },
     categoryID: {
-        type: Number,
-        ref: 'categories'
+        type: String,
     },
-    userID: {
-        type: Number,
-        ref: 'users'
+    username: {
+        type: String
     },
     uploadDate: {
         type: Date,
@@ -24,6 +22,12 @@ const imageSchema = mongoose.Schema({
     likeCount:{
         type:Number,
         default:0
+    },
+    description:{
+        type:String
+    },
+    title:{
+        type:String
     }
 })
 

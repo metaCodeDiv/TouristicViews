@@ -10,8 +10,6 @@ const form = new FormData();
 
 // to can get to our application public
 
-const ngrok = require('ngrok');
-
 var image = require('./models/image')
 var user = require('./models/users')
 var category = require('./models/category')
@@ -48,22 +46,11 @@ const adminRouter = require('./router/adminRouter')
 const userModel = require('./models/users');
 const { lookup } = require('dns');
 const users = require('./models/users');
-const e = require('express');
 
 
 app.use('/user', userRouter);
 app.use('/admin', adminRouter)
 
-app.get('/getFormData', (req, res) => {
-    const fs = require('fs')
-    fs.readFile('./cacheImage/image-1655046102944.png', (err, data) => {
-
-        res.json(({
-            data
-        }))
-    });
-
-})
 
 app.get('/', (req, res) => {
 
@@ -81,27 +68,42 @@ app.get('/', (req, res) => {
 // image uploading will be here 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'cacheImage')
+        cb(null, 'images')
     },
     filename: (req, file, cb) => {
         cb(null, file.fieldname + '-' + Date.now() + '.png')
     }
 });
 
+var storageCategoryImage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'categoryImages')
+    },
+    filename: (req, file, cb) => {
+        cb(null, 'cate' + Date.now() + '.png')
+    }
+})
+
 var upload = multer({ storage: storage });
+var uploadCategoryImage = multer({ storage: storageCategoryImage })
 
+app.post('/user/upload', upload.single('image'), (req, res, next) => {
 
-app.post('/upload', upload.single('image'), (req, res, next) => {
-    console.log('hello')
+    const { username, categoryID, title, description } = req.body
     var obj = {
-        userID: req.body.userID,
-        categoryID: req.body.categoryID,
-        image: '/cacheImage/' + req.file.filename
+        username,
+        categoryID,
+        title,
+        description,
+        image: '/images/' + req.file.filename
     }
 
     image.create(obj, (err, item) => {
         if (err) {
-            console.log(err);
+            res.status(200).json({
+                code: -1,
+                msg: 'upload image has been gotten error '
+            })
         }
         else {
             // item.save();
@@ -114,127 +116,26 @@ app.post('/upload', upload.single('image'), (req, res, next) => {
 
 })
 
+app.post('/admin/addCategory', uploadCategoryImage.single('image'), (req, res, next) => {
+    const { name } = req.body
 
-app.get('/cursor', (req, res) => {
-
-    let data =[];
-    let myPromise = new Promise((correct, erro) => {
-        users.find({},(error,data)=>{
-            if(!error)
-               correct(data)
-            else
-                erro("error")
-        }).cursor().eachAsync((async (doc) => {
-            data.push(doc)
-        }))
-        
-    })
-
-    myPromise.then((correct)=>{
-        console.log(correct)
-    })
-
-
-    
-
-    
-    
-
-    // for  (const doc of image.find({}).cursor()) {
-    //     console.log({ doc })
-    // }
-    function a() {
-        res.json("hello")
+    var obj = {
+        name,
+        image: 'categoryImages/' + req.file.filename
     }
-
-    a()
-})
-app.get('/imageByIdCategory', (req, res) => {
-
-    category.aggregate([
-        {
-            $match: {
-                _id: 12
-            }
-        },
-        {
-            $lookup: {
-                from: "images",
-                localField: "_id",
-                foreignField: "categoryID",
-                as: "info",
-                pipeline: [
-                    {
-                        $lookup: {
-                            from: "users",
-                            localField: "userID",
-                            foreignField: "_id",
-                            as: "data"
-                        }
-                    }
-                ]
-            }
-
-        },
-    ]).exec((err, data) => {
-        if (!err) {
-            res.status(200).json({
-                data
+    category.create(obj, (error, item) => {
+        if (error) {
+            res.status(404).json({
+                code: -1,
+                msg: 'the error ' + error
             })
         }
-
         else {
-            res.json({
-                error: err
-            })
-        }
-    })
-    // qubt77100
-
-    // {
-    //     
-    // }
-})
-app.get('/populate', (req, res) => {
-
-    image.aggregate([
-        {
-            $lookup: {
-                from: "users",
-                localField: "userID",
-                foreignField: "_id",
-                as: "info"
-            }
-        },
-        {
-            $unwind: '$info'
-        }, {
-            $project: {
-                _id: 1,
-                createDate: 1,
-                info: {
-                    username: 1,
-                }
-            }
-        }
-    ]).exec((err, data) => {
-        if (!err) {
-            res.json({
-                data
-            })
-        }
-    })
-})
-app.get('/getImage', (req, res) => {
-    image.find({}, {
-        image: 1
-    }, (err, item) => {
-        if (!err)
             res.status(200).json({
-                data: {
-                    item
-                }
+                code: 1,
+                msg: 'category adding has been  successfully done '
             })
+        }
     })
 })
 
@@ -243,10 +144,5 @@ app.get('/getImage', (req, res) => {
 // start the server 
 const server = http.createServer(app)
 server.listen(process.env.PORT || 3000, (req, res) => {
-
-
     console.log(`the server is running on ${process.env.PORT} ports`)
-
-
-
 })

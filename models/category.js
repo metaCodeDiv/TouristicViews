@@ -7,13 +7,8 @@ const categoryScheam=mongoose.Schema({
         required:true,
         unique : true
     },
-    description:{
+    image:{
         type:String
-    },
-    createDate:{
-        type:Date,
-        default:Date.now,
-        required:true
     }
 })
 

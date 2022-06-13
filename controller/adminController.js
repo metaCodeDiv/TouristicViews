@@ -1,6 +1,6 @@
 const user = require('./../models/users')
 const category = require('./../models/category')
-
+const image = require('./../models/image')
 
 exports.fetchUsers = (req, res) => {
 
@@ -14,8 +14,6 @@ exports.fetchUsers = (req, res) => {
 }
 
 exports.removeUser = (req, res) => {
-
-
     const { id } = req.body
 
     user.remove({
@@ -73,45 +71,30 @@ exports.removeAllUser = (req, res) => {
 }
 
 
-// category controller 
-
-exports.addCategory = (req, res) => {
-    const { name, description } = req.body
-
-    const newCategory = new category({
-        name,
-        description
-    })
-    const data = newCategory;
-    newCategory.save((err) => {
-        if (err) {
-            if (err.code == 11000)
-                res.status(404).json({
-                    data: {
-                        code: err.code,
-                        msg: 'the category is already existed',
-                    }
-                })
-            else {
-                res.status(404).json({
-                    data: {
-                        code: -1,
-                        msg: `there is error ${err}`,
-                    }
-                })
-            }
-        }
-        else {
+exports.removeAllImages=(req,res)=>{
+    image.deleteMany({}, (err, data) => {
+        if (!err) {
             res.status(200).json({
                 data: {
-                    ...data._doc,
                     code: 1,
-                    msg: 'category adding has been successfully done '
+                    msg: 'delete all images has been successfully done '
+                }
+            })
+        }
+        else {
+            res.status(404).json({
+                data: {
+                    code: -1,
+                    msg: `the error is ${err}`
                 }
             })
         }
     })
 }
+
+// category controller 
+
+
 
 exports.fetchAllCategorys = (req, res) => {
     category.find({}, (error, data) => {
@@ -140,5 +123,13 @@ exports.removeAllCategorys = (req, res) => {
                 }
             })
         }
+    })
+}
+
+exports.removeCategory=(req,res)=>{
+    category.remove({
+        _id:id
+    },(error,data)=>{
+
     })
 }

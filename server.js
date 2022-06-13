@@ -102,7 +102,7 @@ app.post('/user/upload', upload.single('image'), (req, res, next) => {
         if (err) {
             res.status(200).json({
                 code: -1,
-                msg: 'upload image has been gotten error '
+                msg: 'upload Image has been gotten error '
             })
         }
         else {

@@ -87,6 +87,26 @@ var storageCategoryImage = multer.diskStorage({
 var upload = multer({ storage: storage });
 var uploadCategoryImage = multer({ storage: storageCategoryImage })
 
+
+app.get('/testImage', (req, res) => {
+
+
+    fs.readFile('categoryImages/cate1655158165825.png', (error, data) => {
+        if (!error)
+            {
+                res.status(200).json({
+                    data
+                })
+            }
+        else{
+            res.status(404).json({
+                data:'there are error'
+            })
+        }
+    })
+})
+
+
 app.post('/user/upload', upload.single('image'), (req, res, next) => {
 
     const { username, categoryID, title, description } = req.body

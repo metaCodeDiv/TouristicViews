@@ -212,7 +212,7 @@ exports.fetchAllCategories = (req, res) => {
                         name: item.name
                     })
                     i++;
-                    console.log(i)
+                    
                     if (i === count) {
                         res.status(200).json({
                             data
@@ -224,3 +224,4 @@ exports.fetchAllCategories = (req, res) => {
     })
 
 }
+

@@ -71,7 +71,7 @@ exports.removeAllUser = (req, res) => {
 }
 
 
-exports.removeAllImages=(req,res)=>{
+exports.removeAllImages = (req, res) => {
     image.deleteMany({}, (err, data) => {
         if (!err) {
             res.status(200).json({
@@ -126,10 +126,52 @@ exports.removeAllCategorys = (req, res) => {
     })
 }
 
-exports.removeCategory=(req,res)=>{
+exports.removeCategory = (req, res) => {
     category.remove({
-        _id:id
-    },(error,data)=>{
+        _id: id
+    }, (error, data) => {
 
+    })
+}
+
+
+exports.accept = (req, res) => {
+    const { id } = req.body
+
+    image.updateOne({
+        _id: id
+    }, {
+        isAccept: 1
+        
+    }, (error, docs) => {
+        if (!error)
+            res.status(200).json({
+                code: 1,
+                msg: 'accept image updating has been successfully '
+            })
+        else
+            res.status(200).json({
+                code: -1,
+                msg: 'accept image updating has been successfully '
+            })
+    })
+}
+
+exports.decline = (req, res) => {
+    const { id } = req.body
+
+    image.remove({
+        _id: id
+    }, (error, data) => {
+        if (!error)
+            res.status(200).json({
+                code: 1,
+                msg: 'decling image update has been successfully'
+            })
+        else
+            res.status(200).json({
+                code: 0,
+                msg: 'decling image update has been successfully'
+            })
     })
 }
